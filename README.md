@@ -38,6 +38,7 @@
 | Volume | `raw_data` | **UI（手動）** |
 | Tables | `bronze_experiments`, `silver_experiments`, `gold_experiments` | Pipeline実行時に自動作成 |
 | Pipeline | `[dev] E2E_実験データパイプライン` | DAB デプロイ |
+| Trigger Job | `[dev] E2E_ファイル到着トリガー` | DAB デプロイ（Volume新規ファイルでPipeline自動起動） |
 | Model | `experiment_predictor` | ML Job実行時に自動登録 |
 | Serving Endpoint | `e2e-experiment-predictor` | ML Job内で自動作成 |
 | Databricks App | `e2e-experiment-app` | DAB デプロイ |
@@ -101,6 +102,7 @@ databricks current-user me -p <your-profile>
 ├── app/                        # Databricks App（FastAPI + React）
 └── resources/                  # DAB リソース定義
     ├── pipeline.yml            # Lakeflow Declarative Pipelines
+    ├── pipeline_trigger.yml    # ファイル到着でPipeline自動起動するジョブ
     ├── ml_job.yml              # ML学習+Servingデプロイ ジョブ
     └── app.yml                 # Databricks App
 ```
@@ -186,18 +188,23 @@ databricks bundle deploy -t dev \
 ```
 
 デプロイされるリソース:
-- Lakeflow Declarative Pipelines
-- ML学習ジョブ (`E2E_ML学習`)
-- Databricks App (`e2e-experiment-app`)
+- Lakeflow Declarative Pipelines（`E2E_実験データパイプライン`）
+- ファイル到着トリガージョブ（`E2E_ファイル到着トリガー`）※ Volume にCSVが追加されるとPipelineを自動起動
+- ML学習ジョブ（`E2E_ML学習`）
+- Databricks App（`e2e-experiment-app`）
 
-### Step 7. Pipeline 実行（UI）
+### Step 7. Pipeline 実行（ファイル到着で自動起動）
 
-1. 左サイドバー **「Jobs & Pipelines」** → **「Pipelines」** タブ
-2. `[dev ...] E2E_実験データパイプライン` をクリック
-3. 右上 **「Start」** をクリック
-4. Bronze → Silver → Gold の順に完了するのを画面で確認
+Step 4 でCSVを Volume にアップロードすると、**ファイル到着トリガージョブ** (`E2E_ファイル到着トリガー`) が自動で検知し、Pipeline を起動します（最短1分以内）。
+
+UI で動きを確認:
+1. 左サイドバー **「Jobs & Pipelines」** → **「Jobs」** タブ
+2. `[dev ...] E2E_ファイル到着トリガー` を開く → 自動的に Run が開始されているのを確認
+3. 続けて **「Pipelines」** タブ → `[dev ...] E2E_実験データパイプライン` → Bronze → Silver → Gold の順に完了するのを画面で確認
 
 完了後、Catalog Explorer で `<your-catalog>.<your-schema>.gold_experiments` が作成されていることを確認してください。
+
+> **手動実行したい場合**: Pipelines 画面で該当パイプラインを開き、右上の **「Start」** から起動可能です。
 
 ### Step 8. Dashboard のインポート（UI）
 

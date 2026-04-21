@@ -1,0 +1,20 @@
+resources:
+  jobs:
+    pipeline_trigger:
+      name: "[${bundle.target}] E2E_ファイル到着トリガー"
+      description: |
+        UC Volume `raw_data/` に新規ファイルが到着したら
+        Lakeflow Declarative Pipelines を自動実行する。
+
+      trigger:
+        pause_status: UNPAUSED
+        file_arrival:
+          url: /Volumes/${var.catalog}/${var.schema}/raw_data/
+          min_time_between_triggers_seconds: 60    # 連続起動の最短間隔
+          wait_after_last_change_seconds: 30       # 最終変更から30秒待って起動（書き込み完了を待つ）
+
+      tasks:
+        - task_key: run_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.experiment_pipeline.id}
+            full_refresh: false    # 既存テーブルに増分追加
