@@ -17,7 +17,7 @@ from databricks.sdk import WorkspaceClient
 
 app = FastAPI(title="材料実験条件 予測・推薦アプリ")
 
-ENDPOINT_NAME = os.environ.get("SERVING_ENDPOINT_NAME", "km-experiment-predictor")
+ENDPOINT_NAME = os.environ.get("SERVING_ENDPOINT_NAME", "e2e-experiment-predictor")
 TARGET_COLS = ["tensile_strength", "elongation", "hardness"]
 FEATURE_COLS = [
     "material_a_ratio", "material_b_ratio", "temperature", "pressure",
@@ -27,10 +27,12 @@ FEATURE_COLS = [
 
 
 def get_client() -> WorkspaceClient:
+    # Databricks App環境ではサービスプリンシパル経由で自動認証
     if os.environ.get("DATABRICKS_APP_NAME"):
         return WorkspaceClient()
-    profile = os.environ.get("DATABRICKS_PROFILE", "fevm-demo-use-yao")
-    return WorkspaceClient(profile=profile)
+    # ローカル実行時はDATABRICKS_PROFILEを指定（未指定時はDEFAULTプロファイル）
+    profile = os.environ.get("DATABRICKS_PROFILE")
+    return WorkspaceClient(profile=profile) if profile else WorkspaceClient()
 
 
 def build_features(a_ratio: float, temperature: int, pressure: int) -> dict:

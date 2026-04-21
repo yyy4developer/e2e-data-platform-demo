@@ -1,13 +1,12 @@
 bundle:
-  name: km_e2e_demo
+  name: e2e_data_platform_demo
 
 variables:
   catalog:
-    description: "Target catalog"
-    default: demo_use_yao_catalog
+    description: "デプロイ先のUnity Catalogカタログ名（各環境で必ず指定してください）"
   schema:
-    description: "Target schema"
-    default: km_e2e_demo
+    description: "デプロイ先のUnity Catalogスキーマ名"
+    default: e2e_demo
 
 include:
   - resources/*.yml
@@ -26,9 +25,9 @@ sync:
     - app/.venv/**
     - app/__pycache__/**
 
+# デプロイ先ワークスペースはCLIプロファイル（~/.databrickscfg）から取得します。
+# 例:  databricks bundle deploy -t dev -p <your-profile> --var="catalog=<your-catalog>"
 targets:
   dev:
     mode: development
     default: true
-    workspace:
-      host: https://fevm-demo-use-yao.cloud.databricks.com

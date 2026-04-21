@@ -2,15 +2,15 @@
 # MAGIC %md
 # MAGIC # 初期化: Schema・Volume作成 + サンプルデータアップロード
 # MAGIC
-# MAGIC KM E2Eデモ用の初期セットアップ。
+# MAGIC 本デモの初期セットアップ。
 # MAGIC - Unity Catalog スキーマの作成
 # MAGIC - UC Volume の作成（生データ格納用）
 # MAGIC - サンプル実験データ（CSV）のアップロード
 
 # COMMAND ----------
 
-dbutils.widgets.text("catalog", "demo_use_yao_catalog", "カタログ名")
-dbutils.widgets.text("schema", "km_e2e_demo", "スキーマ名")
+dbutils.widgets.text("catalog", "", "カタログ名（必須）")
+dbutils.widgets.text("schema", "e2e_demo", "スキーマ名")
 
 catalog = dbutils.widgets.get("catalog")
 schema = dbutils.widgets.get("schema")

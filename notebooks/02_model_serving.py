@@ -7,14 +7,14 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("catalog", "demo_use_yao_catalog", "カタログ名")
-dbutils.widgets.text("schema", "km_e2e_demo", "スキーマ名")
+dbutils.widgets.text("catalog", "", "カタログ名（必須）")
+dbutils.widgets.text("schema", "e2e_demo", "スキーマ名")
 
 catalog = dbutils.widgets.get("catalog")
 schema = dbutils.widgets.get("schema")
 
 model_name = f"{catalog}.{schema}.experiment_predictor"
-endpoint_name = "km-experiment-predictor"
+endpoint_name = "e2e-experiment-predictor"
 
 print(f"モデル: {model_name}")
 print(f"エンドポイント: {endpoint_name}")

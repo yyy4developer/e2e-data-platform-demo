@@ -1,5 +1,5 @@
 def main():
-    print("Hello from km-data-platform-validation!")
+    print("Hello from e2e-data-platform-demo!")
 
 
 if __name__ == "__main__":

@@ -1,12 +1,12 @@
 resources:
   jobs:
     ml_training:
-      name: "[${bundle.target}] KM_ML学習"
+      name: "[${bundle.target}] E2E_ML学習"
       description: |
         実験条件から物性値を予測するMLモデルの学習・登録。
         Gold テーブルのデータを使用。
       tags:
-        project: km_e2e_demo
+        project: e2e_data_platform_demo
         type: ml_training
 
       tasks:

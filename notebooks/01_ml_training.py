@@ -10,8 +10,8 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("catalog", "demo_use_yao_catalog", "カタログ名")
-dbutils.widgets.text("schema", "km_e2e_demo", "スキーマ名")
+dbutils.widgets.text("catalog", "", "カタログ名（必須）")
+dbutils.widgets.text("schema", "e2e_demo", "スキーマ名")
 
 catalog = dbutils.widgets.get("catalog")
 schema = dbutils.widgets.get("schema")
@@ -73,8 +73,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import numpy as np
 
-# MLflow実験設定
-experiment_name = f"/Users/yunyi.yao@databricks.com/km_experiment_prediction"
+# MLflow実験設定（実行ユーザーのホーム配下に作成）
+current_user = spark.sql("SELECT current_user()").collect()[0][0]
+experiment_name = f"/Users/{current_user}/e2e_experiment_prediction"
 mlflow.set_experiment(experiment_name)
 
 # データ分割

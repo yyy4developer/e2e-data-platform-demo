@@ -1,7 +1,7 @@
 resources:
   pipelines:
     experiment_pipeline:
-      name: "[${bundle.target}] KM_実験データパイプライン"
+      name: "[${bundle.target}] E2E_実験データパイプライン"
       target: "${var.schema}"
       libraries:
         - notebook:

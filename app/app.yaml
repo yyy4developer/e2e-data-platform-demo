@@ -10,4 +10,4 @@ command:
 
 env:
   - name: SERVING_ENDPOINT_NAME
-    value: km-experiment-predictor
+    value: e2e-experiment-predictor
