@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv
+
+# Node
+node_modules/
+
+# Databricks
+.databricks/
+
+# OS
+.DS_Store
+
+# Internal docs (README.md以外のmdファイル)
+[0-9]*.md
+aws_validation_test/
+app/frontend/README.md

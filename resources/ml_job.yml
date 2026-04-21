@@ -1,0 +1,29 @@
+resources:
+  jobs:
+    ml_training:
+      name: "[${bundle.target}] KM_ML学習"
+      description: |
+        実験条件から物性値を予測するMLモデルの学習・登録。
+        Gold テーブルのデータを使用。
+      tags:
+        project: km_e2e_demo
+        type: ml_training
+
+      tasks:
+        - task_key: train_and_register
+          description: "モデル学習 + UC Model Registry登録"
+          notebook_task:
+            notebook_path: ../notebooks/01_ml_training.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+
+        - task_key: deploy_serving
+          description: "Model Serving Endpointのデプロイ"
+          depends_on:
+            - task_key: train_and_register
+          notebook_task:
+            notebook_path: ../notebooks/02_model_serving.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}

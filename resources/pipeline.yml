@@ -1,0 +1,15 @@
+resources:
+  pipelines:
+    experiment_pipeline:
+      name: "[${bundle.target}] KM_実験データパイプライン"
+      target: "${var.schema}"
+      libraries:
+        - notebook:
+            path: ../src/sdp_pipeline.py
+      development: true
+      serverless: true
+      catalog: ${var.catalog}
+      channel: PREVIEW
+      configuration:
+        "pipeline.catalog": ${var.catalog}
+        "pipeline.schema": ${var.schema}

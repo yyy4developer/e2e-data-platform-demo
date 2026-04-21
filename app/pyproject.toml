@@ -1,0 +1,12 @@
+[project]
+name = "experiment-prediction-app"
+version = "0.1.0"
+description = "材料実験条件の予測・推薦アプリ"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "databricks-sdk",
+    "numpy",
+    "pydantic",
+]

@@ -1,0 +1,34 @@
+bundle:
+  name: km_e2e_demo
+
+variables:
+  catalog:
+    description: "Target catalog"
+    default: demo_use_yao_catalog
+  schema:
+    description: "Target schema"
+    default: km_e2e_demo
+
+include:
+  - resources/*.yml
+
+sync:
+  include:
+    - src/**
+    - notebooks/**
+    - data/**
+    - app/**
+  exclude:
+    - app/node_modules/**
+    - app/frontend/node_modules/**
+    - app/frontend/src/**
+    - app/frontend/public/**
+    - app/.venv/**
+    - app/__pycache__/**
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://fevm-demo-use-yao.cloud.databricks.com

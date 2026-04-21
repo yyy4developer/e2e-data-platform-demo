@@ -1,0 +1,354 @@
+{
+  "datasets": [
+    {
+      "name": "ds_experiments",
+      "displayName": "実験データ",
+      "queryLines": [
+        "SELECT * FROM demo_use_yao_catalog.km_e2e_demo.gold_experiments"
+      ]
+    },
+    {
+      "name": "ds_tensile_dist",
+      "displayName": "引張強度分布",
+      "queryLines": [
+        "SELECT CONCAT(CAST(FLOOR(tensile_strength / 5) * 5 AS INT), '-', CAST(FLOOR(tensile_strength / 5) * 5 + 4 AS INT)) as bin_label, ",
+        "FLOOR(tensile_strength / 5) * 5 as bin_order, ",
+        "COUNT(*) as count ",
+        "FROM demo_use_yao_catalog.km_e2e_demo.gold_experiments ",
+        "GROUP BY bin_label, bin_order ORDER BY bin_order"
+      ]
+    },
+    {
+      "name": "ds_elongation_dist",
+      "displayName": "伸び率分布",
+      "queryLines": [
+        "SELECT CONCAT(CAST(FLOOR(elongation / 3) * 3 AS INT), '-', CAST(FLOOR(elongation / 3) * 3 + 2 AS INT)) as bin_label, ",
+        "FLOOR(elongation / 3) * 3 as bin_order, ",
+        "COUNT(*) as count ",
+        "FROM demo_use_yao_catalog.km_e2e_demo.gold_experiments ",
+        "GROUP BY bin_label, bin_order ORDER BY bin_order"
+      ]
+    },
+    {
+      "name": "ds_hardness_dist",
+      "displayName": "硬度分布",
+      "queryLines": [
+        "SELECT CONCAT(CAST(FLOOR(hardness / 5) * 5 AS INT), '-', CAST(FLOOR(hardness / 5) * 5 + 4 AS INT)) as bin_label, ",
+        "FLOOR(hardness / 5) * 5 as bin_order, ",
+        "COUNT(*) as count ",
+        "FROM demo_use_yao_catalog.km_e2e_demo.gold_experiments ",
+        "GROUP BY bin_label, bin_order ORDER BY bin_order"
+      ]
+    },
+    {
+      "name": "ds_summary",
+      "displayName": "実験サマリー",
+      "queryLines": [
+        "SELECT COUNT(*) as total_experiments, ",
+        "COUNT(DISTINCT experiment_date) as active_days, ",
+        "AVG(tensile_strength) as avg_tensile, ",
+        "AVG(hardness) as avg_hardness ",
+        "FROM demo_use_yao_catalog.km_e2e_demo.gold_experiments"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "page_overview",
+      "displayName": "概要",
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layout": [
+        {
+          "widget": {
+            "name": "title",
+            "multilineTextboxSpec": {
+              "lines": ["## 材料実験データ分析ダッシュボード"]
+            }
+          },
+          "position": {"x": 0, "y": 0, "width": 6, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "subtitle",
+            "multilineTextboxSpec": {
+              "lines": ["配合条件と物性値の分析・判定結果の可視化"]
+            }
+          },
+          "position": {"x": 0, "y": 1, "width": 6, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "kpi-total",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_summary",
+                "fields": [{"name": "total_experiments", "expression": "`total_experiments`"}],
+                "disaggregated": true
+              }
+            }],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {"fieldName": "total_experiments", "displayName": "実験数"}
+              },
+              "frame": {"showTitle": true, "title": "総実験数"}
+            }
+          },
+          "position": {"x": 0, "y": 2, "width": 2, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "kpi-avg-tensile",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_summary",
+                "fields": [{"name": "avg_tensile", "expression": "`avg_tensile`"}],
+                "disaggregated": true
+              }
+            }],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {"fieldName": "avg_tensile", "displayName": "平均引張強度"}
+              },
+              "frame": {"showTitle": true, "title": "平均引張強度"}
+            }
+          },
+          "position": {"x": 2, "y": 2, "width": 2, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "kpi-avg-hardness",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_summary",
+                "fields": [{"name": "avg_hardness", "expression": "`avg_hardness`"}],
+                "disaggregated": true
+              }
+            }],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {"fieldName": "avg_hardness", "displayName": "平均硬度"}
+              },
+              "frame": {"showTitle": true, "title": "平均硬度"}
+            }
+          },
+          "position": {"x": 4, "y": 2, "width": 2, "height": 3}
+        },
+        {
+          "widget": {
+            "name": "section-trends",
+            "multilineTextboxSpec": {
+              "lines": ["### 実験進捗と判定結果の推移"]
+            }
+          },
+          "position": {"x": 0, "y": 5, "width": 6, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "daily-experiment-count",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_experiments",
+                "fields": [
+                  {"name": "daily(experiment_date)", "expression": "DATE_TRUNC(\"DAY\", `experiment_date`)"},
+                  {"name": "count(*)", "expression": "COUNT(`*`)"}
+                ],
+                "disaggregated": false
+              }
+            }],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {"fieldName": "daily(experiment_date)", "scale": {"type": "temporal"}, "displayName": "実験日"},
+                "y": {"fieldName": "count(*)", "scale": {"type": "quantitative"}, "displayName": "実験数"}
+              },
+              "frame": {"showTitle": true, "title": "日別実験数"}
+            }
+          },
+          "position": {"x": 0, "y": 6, "width": 3, "height": 6}
+        },
+        {
+          "widget": {
+            "name": "grade-by-month",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_experiments",
+                "fields": [
+                  {"name": "monthly(experiment_date)", "expression": "DATE_TRUNC(\"MONTH\", `experiment_date`)"},
+                  {"name": "result_grade", "expression": "`result_grade`"},
+                  {"name": "count(*)", "expression": "COUNT(`*`)"}
+                ],
+                "disaggregated": false
+              }
+            }],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {"fieldName": "monthly(experiment_date)", "scale": {"type": "temporal"}, "displayName": "月"},
+                "y": {"fieldName": "count(*)", "scale": {"type": "quantitative"}, "displayName": "実験数"},
+                "color": {
+                  "fieldName": "result_grade",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {"value": "A", "color": "#00A972"},
+                      {"value": "B", "color": "#FFAB00"},
+                      {"value": "C", "color": "#FF3621"}
+                    ]
+                  },
+                  "displayName": "判定結果"
+                }
+              },
+              "frame": {"showTitle": true, "title": "月別判定結果の推移"}
+            }
+          },
+          "position": {"x": 3, "y": 6, "width": 3, "height": 6}
+        },
+        {
+          "widget": {
+            "name": "section-distribution",
+            "multilineTextboxSpec": {
+              "lines": ["### 物性値の分布と配合条件"]
+            }
+          },
+          "position": {"x": 0, "y": 12, "width": 6, "height": 1}
+        },
+        {
+          "widget": {
+            "name": "tensile-dist",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_tensile_dist",
+                "fields": [
+                  {"name": "bin_label", "expression": "`bin_label`"},
+                  {"name": "count", "expression": "`count`"}
+                ],
+                "disaggregated": true
+              }
+            }],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {"fieldName": "bin_label", "scale": {"type": "categorical", "sort": {"by": "natural-order"}}, "displayName": "引張強度"},
+                "y": {"fieldName": "count", "scale": {"type": "quantitative"}, "displayName": "件数"}
+              },
+              "frame": {"showTitle": true, "title": "引張強度の分布"}
+            }
+          },
+          "position": {"x": 0, "y": 13, "width": 2, "height": 5}
+        },
+        {
+          "widget": {
+            "name": "elongation-dist",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_elongation_dist",
+                "fields": [
+                  {"name": "bin_label", "expression": "`bin_label`"},
+                  {"name": "count", "expression": "`count`"}
+                ],
+                "disaggregated": true
+              }
+            }],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {"fieldName": "bin_label", "scale": {"type": "categorical", "sort": {"by": "natural-order"}}, "displayName": "伸び率"},
+                "y": {"fieldName": "count", "scale": {"type": "quantitative"}, "displayName": "件数"}
+              },
+              "frame": {"showTitle": true, "title": "伸び率の分布"}
+            }
+          },
+          "position": {"x": 2, "y": 13, "width": 2, "height": 5}
+        },
+        {
+          "widget": {
+            "name": "hardness-dist",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_hardness_dist",
+                "fields": [
+                  {"name": "bin_label", "expression": "`bin_label`"},
+                  {"name": "count", "expression": "`count`"}
+                ],
+                "disaggregated": true
+              }
+            }],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {"fieldName": "bin_label", "scale": {"type": "categorical", "sort": {"by": "natural-order"}}, "displayName": "硬度"},
+                "y": {"fieldName": "count", "scale": {"type": "quantitative"}, "displayName": "件数"}
+              },
+              "frame": {"showTitle": true, "title": "硬度の分布"}
+            }
+          },
+          "position": {"x": 4, "y": 13, "width": 2, "height": 5}
+        },
+        {
+          "widget": {
+            "name": "scatter-conditions",
+            "queries": [{
+              "name": "main_query",
+              "query": {
+                "datasetName": "ds_experiments",
+                "fields": [
+                  {"name": "material_a_ratio", "expression": "`material_a_ratio`"},
+                  {"name": "temperature", "expression": "`temperature`"},
+                  {"name": "result_grade", "expression": "`result_grade`"}
+                ],
+                "disaggregated": true
+              }
+            }],
+            "spec": {
+              "version": 3,
+              "widgetType": "scatter",
+              "encodings": {
+                "x": {"fieldName": "material_a_ratio", "scale": {"type": "quantitative"}, "displayName": "材料A配合比"},
+                "y": {"fieldName": "temperature", "scale": {"type": "quantitative"}, "displayName": "温度 (℃)"},
+                "color": {
+                  "fieldName": "result_grade",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {"value": "A", "color": "#00A972"},
+                      {"value": "B", "color": "#FFAB00"},
+                      {"value": "C", "color": "#FF3621"}
+                    ]
+                  },
+                  "displayName": "判定結果"
+                }
+              },
+              "frame": {"showTitle": true, "title": "配合条件マップ（材料A配合比 vs 温度）"}
+            }
+          },
+          "position": {"x": 0, "y": 18, "width": 6, "height": 7}
+        }
+      ]
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
