@@ -15,7 +15,6 @@ sync:
   include:
     - src/**
     - notebooks/**
-    - data/**
     - app/**
   exclude:
     - app/node_modules/**
