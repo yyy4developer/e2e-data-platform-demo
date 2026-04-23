@@ -56,7 +56,7 @@
 | Databricks ワークスペース | **Unity Catalog有効**、Serverless Compute有効 |
 | 権限 | カタログに対する `CREATE SCHEMA`、`CREATE VOLUME`、`CREATE TABLE`、`CREATE MODEL`、`USE CATALOG` 権限 |
 | Databricks CLI | v0.200 以上（`databricks -v` で確認） |
-| Python | 3.12 以上 |
+| Python | 3.11 以上（ローカル開発用。Databricks側クラスタとは独立） |
 | uv | [Python packaging tool](https://docs.astral.sh/uv/) |
 
 ### 推奨構成
