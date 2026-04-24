@@ -11,7 +11,7 @@ resources:
         file_arrival:
           url: /Volumes/${var.catalog}/${var.schema}/raw_data/
           min_time_between_triggers_seconds: 60    # 連続起動の最短間隔
-          wait_after_last_change_seconds: 30       # 最終変更から30秒待って起動（書き込み完了を待つ）
+          wait_after_last_change_seconds: 90       # 最終変更から90秒待って起動（60秒超が必須、書き込み完了待ち）
 
       tasks:
         - task_key: run_pipeline
