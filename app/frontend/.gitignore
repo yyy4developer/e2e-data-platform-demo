@@ -8,7 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist
+# dist/ はビルド済みで commit 対象（クライアントが Node.js 不要で deploy できるように）
+# フロントエンド変更時は `npm run build` で再生成して commit すること
 dist-ssr
 *.local
 
