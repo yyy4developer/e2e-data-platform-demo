@@ -20,3 +20,7 @@ node_modules/
 [0-9]*.md
 aws_validation_test/
 app/frontend/README.md
+
+# Claude Code local config (kept out of shared repo)
+.claude/
+CLAUDE.md
