@@ -1,0 +1,9 @@
+resources:
+  dashboards:
+    experiment_dashboard:
+      display_name: "[${bundle.target}] E2E_実験データ分析ダッシュボード"
+      file_path: ../dashboards/experiment_dashboard.lvdash.json
+      warehouse_id: ${var.warehouse_id}
+      # DAB が全 dataset のテーブル名にこのカタログ・スキーマを自動補完
+      dataset_catalog: ${var.catalog}
+      dataset_schema: ${var.schema}

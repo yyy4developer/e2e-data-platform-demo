@@ -4,7 +4,7 @@
       "name": "ds_experiments",
       "displayName": "実験データ",
       "queryLines": [
-        "SELECT * FROM <CATALOG>.<SCHEMA>.gold_experiments"
+        "SELECT * FROM gold_experiments"
       ]
     },
     {
@@ -14,7 +14,7 @@
         "SELECT CONCAT(CAST(FLOOR(tensile_strength / 5) * 5 AS INT), '-', CAST(FLOOR(tensile_strength / 5) * 5 + 4 AS INT)) as bin_label, ",
         "FLOOR(tensile_strength / 5) * 5 as bin_order, ",
         "COUNT(*) as count ",
-        "FROM <CATALOG>.<SCHEMA>.gold_experiments ",
+        "FROM gold_experiments ",
         "GROUP BY bin_label, bin_order ORDER BY bin_order"
       ]
     },
@@ -25,7 +25,7 @@
         "SELECT CONCAT(CAST(FLOOR(elongation / 3) * 3 AS INT), '-', CAST(FLOOR(elongation / 3) * 3 + 2 AS INT)) as bin_label, ",
         "FLOOR(elongation / 3) * 3 as bin_order, ",
         "COUNT(*) as count ",
-        "FROM <CATALOG>.<SCHEMA>.gold_experiments ",
+        "FROM gold_experiments ",
         "GROUP BY bin_label, bin_order ORDER BY bin_order"
       ]
     },
@@ -36,7 +36,7 @@
         "SELECT CONCAT(CAST(FLOOR(hardness / 5) * 5 AS INT), '-', CAST(FLOOR(hardness / 5) * 5 + 4 AS INT)) as bin_label, ",
         "FLOOR(hardness / 5) * 5 as bin_order, ",
         "COUNT(*) as count ",
-        "FROM <CATALOG>.<SCHEMA>.gold_experiments ",
+        "FROM gold_experiments ",
         "GROUP BY bin_label, bin_order ORDER BY bin_order"
       ]
     },
@@ -48,7 +48,7 @@
         "COUNT(DISTINCT experiment_date) as active_days, ",
         "AVG(tensile_strength) as avg_tensile, ",
         "AVG(hardness) as avg_hardness ",
-        "FROM <CATALOG>.<SCHEMA>.gold_experiments"
+        "FROM gold_experiments"
       ]
     }
   ],

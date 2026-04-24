@@ -7,6 +7,8 @@ variables:
   schema:
     description: "デプロイ先のUnity Catalogスキーマ名"
     default: e2e_demo
+  warehouse_id:
+    description: "Dashboard で使用する Serverless SQL Warehouse ID（SQL Warehouses 画面から取得）"
 
 include:
   - resources/*.yml
