@@ -8,15 +8,28 @@
 # MAGIC ## 仕組み
 # MAGIC
 # MAGIC ```
-# MAGIC ┌──────────────────┐                      ┌─────────────────────┐
-# MAGIC │ ローカル PC       │   gRPC (Spark Connect)│ Databricks Cluster  │
-# MAGIC │ (.venv Python)    │ ─────────────────→  │ (Serverless / DBR)  │
-# MAGIC │                  │                      │                     │
-# MAGIC │ ・通常のPython    │                      │ ・Spark DataFrame   │
-# MAGIC │ ・pandas         │                      │ ・SQL実行           │
-# MAGIC │ ・numpy          │                      │ ・ファイルI/O       │
-# MAGIC └──────────────────┘                      └─────────────────────┘
+# MAGIC [ローカル PC: .venv]                        [Databricks Cluster]
+# MAGIC    │                                            │
+# MAGIC    │  spark.table("foo")  ─── gRPC ──────────► │  ← 論理プランのみ送信
+# MAGIC    │  df.filter(...)       ─── gRPC ──────────► │  ← lazy（即実行されない）
+# MAGIC    │                                            │
+# MAGIC    │  df.show() / .collect() / .toPandas()      │
+# MAGIC    │  ──────────── action 実行 ──────────────►  │  ← クラスタで実プラン実行
+# MAGIC    │  ◄────────── 結果ストリーム返却 ────────── │
+# MAGIC    │                                            │
+# MAGIC    │  pd.DataFrame として処理続行（local）        │
 # MAGIC ```
+# MAGIC
+# MAGIC | 観点 | LOCAL（ローカルPC） | CLOUD（Databricks Cluster） |
+# MAGIC |------|-------------------|---------------------------|
+# MAGIC | 通常 Python / pandas / numpy | ✅ 実行 | - |
+# MAGIC | ローカルファイル I/O（`open(...)`） | ✅ 実行 | - |
+# MAGIC | Spark DataFrame transform | プラン構築のみ（lazy） | - |
+# MAGIC | Spark Action（`.show/.collect/.toPandas/.count`） | 結果受け取り | ✅ プラン実行 |
+# MAGIC | Spark 経由の I/O（UC Volume / DBFS / Delta） | - | ✅ 実行 |
+# MAGIC | Python UDF | 定義のみ | ✅ executor 上で実行（serialized送信） |
+# MAGIC | `SparkContext` / RDD API | ❌ 使用不可 | ❌ Connect 非対応 |
+# MAGIC | `dbutils.fs/secrets/jobs/widgets` | 一部のみ | ✅ |
 # MAGIC
 # MAGIC ## 使い方
 # MAGIC - VSCodeで `.py` ファイルを開き、各セル左の **「Run Cell」** ボタンで実行
