@@ -12,6 +12,10 @@ node_modules/
 
 # Databricks
 .databricks/
+.databricks-resources.json
+
+# ローカル個人設定 (databricks.local.yml 等)
+*.local.yml
 
 # OS
 .DS_Store

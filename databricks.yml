@@ -12,6 +12,9 @@ variables:
 
 include:
   - resources/*.yml
+  # ローカル個人設定のオーバーライド（gitignored、任意）
+  # 例: dev target の host を個人workspaceに設定したい場合に作成
+  - "*.local.yml"
 
 sync:
   include:
